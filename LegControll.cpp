@@ -18,26 +18,28 @@ LegControll::~LegControll() {
   Serial.println("leg destructor!");
 }
 
-void LegControll::setup() {  
+void LegControll::Setup() {  
+  servo_control.Setup();
+  delay(delaytime);
   for(int i = 0; i < legs.size(); i++) {
     servo_control.move(legs[i].sub_pin, legs[i].sub_center_angle);
     delay(100);
-    servo_control.move(legs[i].base_pin, legs[i].base_front_angle);
+    servo_control.move(legs[i].base_pin, 90);
     delay(100);
     servo_control.move(legs[i].sub_pin, legs[i].sub_down_angle);
   }
 }
 
-void LegControll::walk() {
+void LegControll::Walk() {
   // 足上げる
   servo_control.move(legs[0].sub_pin, legs[0].sub_center_angle);
   servo_control.move(legs[2].sub_pin, legs[2].sub_center_angle);
-  delay(time_sleep_leg);
+  delay(DELAY_TIME);
   servo_control.move(legs[0].base_pin, legs[0].base_front_angle);
   servo_control.move(legs[2].base_pin, legs[2].base_front_angle);
   servo_control.move(legs[1].base_pin, legs[1].base_back_angle);
   servo_control.move(legs[3].base_pin, legs[3].base_back_angle);
-  delay(time_sleep_leg);
+  delay(DELAY_TIME);
   // 足下げる
   if(!reverse_flg) {
     servo_control.move(legs[0].sub_pin, legs[0].sub_down_angle);
@@ -46,16 +48,16 @@ void LegControll::walk() {
     servo_control.move(legs[0].sub_pin, legs[0].sub_up_angle);
     servo_control.move(legs[2].sub_pin, legs[2].sub_up_angle);
   }
-  delay(time_sleep_leg);
+  delay(DELAY_TIME);
   // 足上げる
   servo_control.move(legs[1].sub_pin, legs[1].sub_center_angle);
   servo_control.move(legs[3].sub_pin, legs[3].sub_center_angle);
-  delay(time_sleep_leg);
+  delay(DELAY_TIME);
   servo_control.move(legs[0].base_pin, legs[0].base_back_angle);
   servo_control.move(legs[2].base_pin, legs[2].base_back_angle);
   servo_control.move(legs[1].base_pin, legs[1].base_front_angle);
   servo_control.move(legs[3].base_pin, legs[3].base_front_angle);
-  delay(time_sleep_leg);
+  delay(DELAY_TIME);
   // 足下げる
   if(!reverse_flg) {
     servo_control.move(legs[1].sub_pin, legs[1].sub_down_angle);
@@ -64,7 +66,6 @@ void LegControll::walk() {
     servo_control.move(legs[1].sub_pin, legs[1].sub_up_angle);
     servo_control.move(legs[3].sub_pin, legs[3].sub_up_angle);
   }
-  delay(time_sleep_leg);
 }
 
 
@@ -90,7 +91,7 @@ void LegControll::Rotate(RotateType direction) {
     case leftward: // leg0 → leg3 右足
       tmp = legs[legs.size() - 1];
 
-      for(int i = legs.size() - 1; i > 0; i++) {
+      for(int i = legs.size() - 1; i > 0; i--) {
         legs[i] = legs[i-1];
       }
       legs[0] = tmp;
@@ -101,7 +102,46 @@ void LegControll::Rotate(RotateType direction) {
   }
 }
 
-void LegControll::reverse() {
+void LegControll::Turning() {
+  servo_control.move(legs[0].sub_pin, legs[0].sub_center_angle);
+  servo_control.move(legs[2].sub_pin, legs[2].sub_center_angle);
+  delay(DELAY_TIME);
+  servo_control.move(legs[0].base_pin, legs[0].base_front_angle);
+  servo_control.move(legs[2].base_pin, legs[2].base_back_angle);
+  servo_control.move(legs[1].base_pin, legs[1].base_back_angle);
+  servo_control.move(legs[3].base_pin, legs[3].base_front_angle);
+  delay(DELAY_TIME);
+  // 足下げる
+  if(!reverse_flg) {
+    servo_control.move(legs[0].sub_pin, legs[0].sub_down_angle);
+    servo_control.move(legs[2].sub_pin, legs[2].sub_down_angle);
+  } else {
+    servo_control.move(legs[0].sub_pin, legs[0].sub_up_angle);
+    servo_control.move(legs[2].sub_pin, legs[2].sub_up_angle);
+  }
+  delay(DELAY_TIME);
+  // 足上げる
+  servo_control.move(legs[1].sub_pin, legs[1].sub_center_angle);
+  servo_control.move(legs[3].sub_pin, legs[3].sub_center_angle);
+  delay(DELAY_TIME);
+  servo_control.move(legs[0].base_pin, legs[0].base_back_angle);
+  servo_control.move(legs[2].base_pin, legs[2].base_front_angle);
+  servo_control.move(legs[1].base_pin, legs[1].base_front_angle);
+  servo_control.move(legs[3].base_pin, legs[3].base_back_angle);
+  delay(DELAY_TIME);
+  // 足下げる
+  if(!reverse_flg) {
+    servo_control.move(legs[1].sub_pin, legs[1].sub_down_angle);
+    servo_control.move(legs[3].sub_pin, legs[3].sub_down_angle);
+  } else {
+    servo_control.move(legs[1].sub_pin, legs[1].sub_up_angle);
+    servo_control.move(legs[3].sub_pin, legs[3].sub_up_angle);
+  }
+  delay(DELAY_TIME);
+
+}
+
+void LegControll::Reverse() {
   if(reverse_flg) {
     Serial.print("reverse true");
     reverse_flg = true;
@@ -112,14 +152,149 @@ void LegControll::reverse() {
 }
 
 void LegControll::Test() {
-  for(int i = 0; i < legs.size(); i++) {
-    servo_control.move(legs[i].base_pin, legs[i].base_front_angle);
+  servo_control.move(legs[1].sub_pin, legs[1].sub_center_angle);
+  servo_control.move(legs[1].base_pin, legs[1].base_front_angle);
+  if(!reverse_flg) {
+    servo_control.move(legs[1].sub_pin, legs[1].sub_down_angle);
+  } else {
+    servo_control.move(legs[1].sub_pin, legs[1].sub_up_angle);
   }
-  delay(time_sleep_leg);
+  servo_control.move(legs[2].sub_pin, legs[2].sub_center_angle);
+  servo_control.move(legs[2].base_pin, legs[2].base_front_angle);
+  if(!reverse_flg) {
+    servo_control.move(legs[2].sub_pin, legs[2].sub_down_angle);
+  } else {
+    servo_control.move(legs[2].sub_pin, legs[2].sub_up_angle);
+  }
+  servo_control.move(legs[0].sub_pin, legs[0].sub_center_angle);
+  servo_control.move(legs[0].base_pin, legs[0].base_front_angle);
+  if(!reverse_flg) {
+    servo_control.move(legs[0].sub_pin, legs[0].sub_down_angle);
+  } else {
+    servo_control.move(legs[0].sub_pin, legs[0].sub_up_angle);
+  }
+
+  servo_control.move(legs[3].sub_pin, legs[3].sub_center_angle);
+  delay(DELAY_TIME);
+
+  servo_control.move(legs[0].base_pin, legs[0].base_back_angle);
+  servo_control.move(legs[1].base_pin, legs[1].base_back_angle);
+  servo_control.move(legs[2].base_pin, legs[2].base_back_angle);
+  delay(DELAY_TIME);
+  if(!reverse_flg) {
+    servo_control.move(legs[3].sub_pin, legs[3].sub_down_angle);
+  } else {
+    servo_control.move(legs[3].sub_pin, legs[3].sub_up_angle);
+  }
+
+  servo_control.move(legs[1].sub_pin, legs[1].sub_center_angle);
+  servo_control.move(legs[1].base_pin, legs[1].base_front_angle);
+  if(!reverse_flg) {
+    servo_control.move(legs[1].sub_pin, legs[1].sub_down_angle);
+  } else {
+    servo_control.move(legs[1].sub_pin, legs[1].sub_up_angle);
+  }
+  servo_control.move(legs[2].sub_pin, legs[2].sub_center_angle);
+  servo_control.move(legs[2].base_pin, legs[2].base_front_angle);
+  if(!reverse_flg) {
+    servo_control.move(legs[2].sub_pin, legs[2].sub_down_angle);
+  } else {
+    servo_control.move(legs[2].sub_pin, legs[2].sub_up_angle);
+  }
+  servo_control.move(legs[3].sub_pin, legs[3].sub_center_angle);
+  servo_control.move(legs[3].base_pin, legs[3].base_front_angle);
+  if(!reverse_flg) {
+    servo_control.move(legs[3].sub_pin, legs[3].sub_down_angle);
+  } else {
+    servo_control.move(legs[3].sub_pin, legs[3].sub_up_angle);
+  }
+
+  servo_control.move(legs[0].sub_pin, legs[0].sub_center_angle);
+  delay(DELAY_TIME);
+
+  servo_control.move(legs[3].base_pin, legs[3].base_back_angle);
+  servo_control.move(legs[1].base_pin, legs[1].base_back_angle);
+  servo_control.move(legs[2].base_pin, legs[2].base_back_angle);
+  delay(DELAY_TIME);
+  if(!reverse_flg) {
+    servo_control.move(legs[0].sub_pin, legs[0].sub_down_angle);
+  } else {
+    servo_control.move(legs[0].sub_pin, legs[0].sub_up_angle);
+  }
+
+}
+
+void LegControll::Test2() {
+  servo_control.move(legs[0].base_pin, legs[0].base_front_angle);
+  servo_control.move(legs[1].base_pin, legs[1].base_front_angle);
+  servo_control.move(legs[2].base_pin, legs[2].base_back_angle);
+  servo_control.move(legs[3].base_pin, legs[3].base_back_angle);
+  delay(DELAY_TIME);
+  servo_control.move(legs[3].base_pin, legs[3].base_front_angle);
+  servo_control.move(legs[2].base_pin, legs[2].base_front_angle);
+  servo_control.move(legs[1].base_pin, legs[1].base_back_angle);
+  servo_control.move(legs[0].base_pin, legs[0].base_back_angle);
+  delay(DELAY_TIME);
+}
+
+void LegControll::Test3() {
+
+  servo_control.move(legs[1].base_pin, legs[1].base_back_angle);
+  servo_control.move(legs[1].sub_pin, legs[1].sub_center_angle);
+  delay(delaytime);
+  servo_control.move(legs[1].base_pin, legs[1].base_front_angle);
+  delay(delaytime);
+  if(!reverse_flg) {
+    servo_control.move(legs[1].sub_pin, legs[1].sub_down_angle);
+  } else {
+    servo_control.move(legs[1].sub_pin, legs[1].sub_up_angle);
+  }
+  delay(delaytime);
+
+  servo_control.move(legs[2].base_pin, legs[2].base_back_angle);
+  servo_control.move(legs[2].sub_pin, legs[2].sub_center_angle);
+  delay(delaytime);
+  servo_control.move(legs[2].base_pin, legs[2].base_front_angle);
+  delay(delaytime);
+  if(!reverse_flg) {
+    servo_control.move(legs[2].sub_pin, legs[2].sub_down_angle);
+  } else {
+    servo_control.move(legs[2].sub_pin, legs[2].sub_up_angle);
+  }
+  delay(delaytime);
+
+
+  servo_control.move(legs[0].base_pin, legs[0].base_back_angle);
+  servo_control.move(legs[0].sub_pin, legs[0].sub_center_angle);
+  delay(delaytime);
+  servo_control.move(legs[0].base_pin, legs[0].base_front_angle);
+  delay(delaytime);
+  if(!reverse_flg) {
+    servo_control.move(legs[0].sub_pin, legs[0].sub_down_angle);
+  } else {
+    servo_control.move(legs[0].sub_pin, legs[0].sub_up_angle);
+  }
+  delay(delaytime);
+
+  servo_control.move(legs[3].base_pin, legs[3].base_back_angle);
+  servo_control.move(legs[3].sub_pin, legs[3].sub_center_angle);
+  delay(delaytime);
+  servo_control.move(legs[3].base_pin, legs[3].base_front_angle);
+  delay(delaytime);
+  if(!reverse_flg) {
+    servo_control.move(legs[3].sub_pin, legs[3].sub_down_angle);
+  } else {
+    servo_control.move(legs[3].sub_pin, legs[3].sub_up_angle);
+  }
+  delay(delaytime);
+
+
+
   for(int i = 0; i < legs.size(); i++) {
     servo_control.move(legs[i].base_pin, legs[i].base_back_angle);
   }
-  delay(time_sleep_leg);
-  
+  delay(delaytime);
+
 }
+
 

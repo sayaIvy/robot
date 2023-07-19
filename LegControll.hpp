@@ -3,13 +3,13 @@
 #include <ArxContainer.h>
 #include <Arduino.h>
 #include "ServoMotor.hpp"
-
-
+#include "GlobalDef.hpp"
 
 struct Leg {
   int base_pin;
   int sub_pin;
   int base_front_angle;
+  // int base_center_angle;
   int base_back_angle;
   int sub_down_angle;
   int sub_center_angle;
@@ -23,11 +23,15 @@ enum RotateType {
 };
 
 namespace {
-  static const Leg leg0 = { 0, 3, 75, 95, 30, 90, 175 };
-  static const Leg leg1 = { 4, 7, 75, 95, 30, 90, 175 };
-  static const Leg leg2 = { 8, 11, 95, 70, 30, 90, 175 };
-  static const Leg leg3 = { 12, 15, 95, 65, 30, 90, 175 }; 
-  static const int time_sleep_leg = 200; 
+  const Leg leg0 = { 0, 3, 65, 130, 20, 90, 145 };
+  const Leg leg1 = { 4, 7, 60, 120, 20, 90, 145 };
+  const Leg leg2 = { 8, 11, 110, 45, 20, 90, 145 };
+  const Leg leg3 = { 12, 15, 100, 55, 20, 90, 145 }; 
+  // const Leg leg0 = { 0, 3, 65, 90, 20, 90, 145 };
+  // const Leg leg1 = { 4, 7, 65, 90, 20, 90, 145 };
+  // const Leg leg2 = { 8, 11, 115, 90, 20, 90, 145 };
+  // const Leg leg3 = { 12, 15, 115, 90, 20, 90, 145 }; 
+
 }
 
 class LegControll {
@@ -36,16 +40,21 @@ class LegControll {
 
     ~LegControll();
 
-    void setup();
+    void Setup();
 
-    void walk();
+    void Walk();
 
     void Rotate(RotateType direction);
 
-    void reverse();
+    void Turning();
+
+    void Reverse();
 
     void Test();
 
+    void Test2();
+
+    void Test3();
 
   private:
 
@@ -54,4 +63,7 @@ class LegControll {
     bool reverse_flg;
 
     ServoMotor servo_control;
+
+    int delaytime = 500;
+
 };
