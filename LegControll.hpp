@@ -3,7 +3,7 @@
 #include <ArxContainer.h>
 #include <Arduino.h>
 #include "ServoMotor.hpp"
-#include "GlobalDef.hpp"
+#include "DelayDef.hpp"
 
 struct Leg {
   int base_pin;
@@ -40,30 +40,31 @@ class LegControll {
 
     ~LegControll();
 
-    void Setup();
+    void setup();
 
-    void Walk();
+    void walk();
 
-    void Rotate(RotateType direction);
+    // 二本支持の歩行
+    void oldWalk();
 
-    void Turning();
+    void rotate(RotateType direction);
 
-    void Reverse();
+    void turning();
 
-    void Test();
+    void reverse();
 
-    void Test2();
+    void test(); // experimental walk
 
-    void Test3();
+    void test2(); // base move
 
   private:
 
     arx::vector<Leg> legs;
 
-    bool reverse_flg;
+    bool is_reverse;
 
     ServoMotor servo_control;
 
-    int delaytime = 500;
+    void UpAndDownOneLeg_(int leg_num);
 
 };

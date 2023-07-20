@@ -27,9 +27,9 @@ Ultrasonic::~Ultrasonic() {
 double Ultrasonic::Distance() {  // 距離測定
   digitalWrite(trig_pin_, LOW); 
   delayMicroseconds(2); 
-  digitalWrite( trig_pin_, HIGH ); //超音波を出力
+  digitalWrite(trig_pin_, HIGH ); //超音波を出力
   delayMicroseconds( 10 );
-  digitalWrite( trig_pin_, LOW );
+  digitalWrite(trig_pin_, LOW );
   duration_ = pulseIn( echo_pin_, HIGH ); //センサからの入力
   if (duration_ > 0) {
     duration_ = duration_/2; //往復距離を半分にする
