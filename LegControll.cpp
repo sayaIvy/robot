@@ -32,13 +32,20 @@ void LegControll::setup() {
 
 void LegControll::walk() {
   UpAndDownOneLeg_(1);
-  UpAndDownOneLeg_(2);
+  delay(LEG_DELAY_TIME);  
   UpAndDownOneLeg_(0);
+
+  servo_control.move(legs[1].base_pin, legs[1].base_back_angle);
+  servo_control.move(legs[3].base_pin, legs[3].base_back_angle);
+  delay(LEG_DELAY_TIME);
+
+  UpAndDownOneLeg_(2);
+  delay(LEG_DELAY_TIME);  
   UpAndDownOneLeg_(3);
 
-  for(int i = 0; i < legs.size(); i++) {
-    servo_control.move(legs[i].base_pin, legs[i].base_back_angle);
-  }
+  servo_control.move(legs[2].base_pin, legs[2].base_back_angle);
+  servo_control.move(legs[0].base_pin, legs[0].base_back_angle);
+
 }
 
 void LegControll::oldWalk() {
@@ -92,12 +99,10 @@ void LegControll::rotate(RotateType direction) {
       // legs[legs.size() - 1] = tmp;
 
       legs.clear();
-      legs.push_back(leg1);
-      legs.push_back(leg2);
-      legs.push_back(leg3);
-      legs.push_back(leg0);
-
-
+      legs.push_back(leg1); // b
+      legs.push_back(leg2); // a
+      legs.push_back(leg3); // c
+      legs.push_back(leg0); // d
       break;
     case leftward: // leg0 → leg3 右足
       tmp = legs[legs.size() - 1];
@@ -148,6 +153,7 @@ void LegControll::turning() {
     servo_control.move(legs[1].sub_pin, legs[1].sub_up_angle);
     servo_control.move(legs[3].sub_pin, legs[3].sub_up_angle);
   }
+  delay(COMMON_DELAY_TIME);
 }
 
 void LegControll::reverse() {
@@ -162,31 +168,57 @@ void LegControll::reverse() {
 
 void LegControll::test() {
   UpAndDownOneLeg_(1);
-delay(LEG_DELAY_TIME);  
-  UpAndDownOneLeg_(0);
-
-  servo_control.move(legs[1].base_pin, legs[1].base_back_angle);
-  servo_control.move(legs[3].base_pin, legs[3].base_back_angle);
-  delay(LEG_DELAY_TIME);
-
   UpAndDownOneLeg_(2);
+  UpAndDownOneLeg_(0);
   UpAndDownOneLeg_(3);
 
-  servo_control.move(legs[2].base_pin, legs[2].base_back_angle);
-  servo_control.move(legs[0].base_pin, legs[0].base_back_angle);
+  for(int i = 0; i < legs.size(); i++) {
+    servo_control.move(legs[i].base_pin, legs[i].base_back_angle);
+  }
+
 }
 
 void LegControll::test2() {
-  servo_control.move(legs[0].base_pin, legs[0].base_front_angle);
-  servo_control.move(legs[1].base_pin, legs[1].base_front_angle);
-  servo_control.move(legs[2].base_pin, legs[2].base_back_angle);
-  servo_control.move(legs[3].base_pin, legs[3].base_back_angle);
-  delay(COMMON_DELAY_TIME);
-  servo_control.move(legs[3].base_pin, legs[3].base_front_angle);
+  // 右後ろ
+  servo_control.move(legs[2].sub_pin, legs[2].sub_center_angle);
   servo_control.move(legs[2].base_pin, legs[2].base_front_angle);
+  delay(LEG_DELAY_TIME);
+  servo_control.move(legs[2].base_pin, legs[2].base_back_angle);
+  delay(LEG_DELAY_TIME);
+  servo_control.move(legs[2].sub_pin, legs[2].sub_down_angle);
+  delay(LEG_DELAY_TIME);  
+
+  // 右前
+  servo_control.move(legs[1].sub_pin, legs[1].sub_center_angle);
   servo_control.move(legs[1].base_pin, legs[1].base_back_angle);
+  delay(LEG_DELAY_TIME);
+  servo_control.move(legs[1].base_pin, legs[1].base_front_angle);
+  delay(LEG_DELAY_TIME);
+  servo_control.move(legs[1].sub_pin, legs[1].sub_down_angle);
+
+  servo_control.move(legs[2].base_pin, legs[2].base_front_angle);
+  servo_control.move(legs[0].base_pin, legs[0].base_front_angle);
+  delay(LEG_DELAY_TIME);
+
+  servo_control.move(legs[3].sub_pin, legs[3].sub_center_angle);
+  servo_control.move(legs[3].base_pin, legs[3].base_back_angle);
+  delay(LEG_DELAY_TIME);
+  servo_control.move(legs[3].base_pin, legs[3].base_front_angle);
+  delay(LEG_DELAY_TIME);
+  servo_control.move(legs[3].sub_pin, legs[3].sub_down_angle);
+  delay(LEG_DELAY_TIME);  
+
+  servo_control.move(legs[0].sub_pin, legs[0].sub_center_angle);
+  servo_control.move(legs[0].base_pin, legs[0].base_front_angle);
+  delay(LEG_DELAY_TIME);
   servo_control.move(legs[0].base_pin, legs[0].base_back_angle);
-  delay(COMMON_DELAY_TIME);
+  delay(LEG_DELAY_TIME);
+  servo_control.move(legs[0].sub_pin, legs[0].sub_down_angle);
+
+
+  servo_control.move(legs[1].base_pin, legs[1].base_back_angle);
+  servo_control.move(legs[3].base_pin, legs[3].base_back_angle);
+
 }
 
 

@@ -3,6 +3,8 @@
 
 RobotControll robot;
 
+int counter = 2;
+
 void setup() {
   Serial.begin(9600);
   Serial.println("setup");
@@ -13,15 +15,40 @@ void setup() {
 }
 
 void loop() {
-  robot.stateHandler();
+  // robot.test();
+
+  // 障害物
+  robot.setStatusType(RobotStatusType::Walk);
+  for(int i = 0; i < counter; i++) {
+    robot.stateHandler();
+  }
+
+  delay(1000);
+  for(int i = 0; i < 3; i++) {
+    robot.test();
+    delay(500);
+  }
+
+  for(int i = 0; i < counter; i++) {
+    robot.stateHandler();
+  }
 
 
 
-  // Serial.print("axis X: ");
-  // Serial.print(acceleration.ReadAngle(Acceleration::AxisType::axisX));
-  // Serial.print(" Y: ");
-  // Serial.print(acceleration.ReadAngle(Acceleration::AxisType::axisY));
-  // Serial.print(" Z: ");
-  // Serial.println(acceleration.ReadAngle(Acceleration::AxisType::axisZ));
+  // Serial.println("RotateRight");
+  // robot.setStatusType(RobotStatusType::RotateRight);
+  // robot.stateHandler();
 
+  // robot.setStatusType(RobotStatusType::Walk);
+  // for(int i = 0; i < counter; i++) {
+  //   robot.stateHandler();
+  // }
+
+  // Serial.println("RotateLeft");
+  // robot.setStatusType(RobotStatusType::RotateLeft);
+  // robot.stateHandler();
+  // for(int i = 0; i < counter; i++) {
+  //   robot.setStatusType(RobotStatusType::Walk);
+  //   robot.stateHandler();
+  // }
 }

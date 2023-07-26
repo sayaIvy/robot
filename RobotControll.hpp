@@ -41,6 +41,10 @@ class RobotControll {
 
     RobotStatusType type_;
     double read_distance_cm_;
+    int controll_walk_counter_;
+
+    bool is_right_direction_;
+    bool is_left_direction_;
   
     LegControll leg_;
     Acceleration acceleration_;
